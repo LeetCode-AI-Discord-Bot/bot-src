@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.messages import SystemMessage
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage, BaseMessage
 
 _general_system_prompt = SystemMessage(
     """
@@ -17,7 +17,7 @@ _google_model_normal = ChatGoogleGenerativeAI(
     max_retries=3,
 )
 
-def call_gemini_normal(chat_history):
+def call_gemini_normal(chat_history: list[HumanMessage | AIMessage]) -> BaseMessage:
     chat_history.insert(0, _general_system_prompt)
     res = _google_model_normal.invoke(chat_history)
     return res

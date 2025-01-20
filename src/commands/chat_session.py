@@ -12,7 +12,7 @@ chat_session = discord.SlashCommandGroup(
     "Create a new AI chat session", 
     guild_ids=[int(os.getenv("DISCORD_GUILD_ID"))])
 
-async def create_chat_thread(ctx, prompt: str, model: str):
+async def create_chat_thread(ctx: discord.Interaction, prompt: str, model: str):
     if isinstance(ctx.channel, discord.Thread):
         await ctx.respond("You are already in a thread.")
         return
@@ -31,7 +31,7 @@ async def create_chat_thread(ctx, prompt: str, model: str):
     return thread
 
 @chat_session.command()
-async def gemini(ctx, prompt: str):
+async def gemini(ctx: discord.Interaction, prompt: str):
     thread = await create_chat_thread(ctx, prompt, "gemini-1.5-flash")
 
     session = {
@@ -49,7 +49,7 @@ async def gemini(ctx, prompt: str):
 
 
 @chat_session.command()
-async def gpt(ctx, prompt: str):
+async def gpt(ctx: discord.Interaction, prompt: str):
     thread = await create_chat_thread(ctx, prompt, "gpt-4o-mini")
 
     session = {
@@ -67,7 +67,7 @@ async def gpt(ctx, prompt: str):
 
 
 @chat_session.command()
-async def o1mini(ctx, prompt: str):
+async def o1mini(ctx: discord.Interaction, prompt: str):
     thread = await create_chat_thread(ctx, prompt, "o1-mini")
 
     session = {

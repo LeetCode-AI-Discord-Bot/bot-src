@@ -29,7 +29,7 @@ async def on_thread_remove(thread: discord.Thread):
 
 
 @bot.event
-async def on_message(message):
+async def on_message(message: discord.Message):
     if not message.author.bot and isinstance(message.channel, discord.Thread):
         message.channel.archived = True
         await send_message(message.channel.id, message.content)
