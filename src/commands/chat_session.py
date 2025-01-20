@@ -24,7 +24,7 @@ async def create_chat_thread(ctx: discord.Interaction, prompt: str, model: str):
     )
 
     # Create welcome message
-    await ctx.respond(f"**{ctx.author.mention} | Model: {model} | Chat has been created**")
+    await ctx.respond(f"**{ctx.author.mention} | Model: {model} | <#{thread.id}>**")
     await thread.send(f"**Hello {ctx.author.mention}! I'm here to assist you. Please wait as I read your prompt.**\n\nPrompt: {prompt}")
     await thread.add_user(ctx.author)
 
