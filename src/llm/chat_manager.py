@@ -5,10 +5,13 @@ from src import bot as discord
 from src.redis_store import redis_store
 
 from .gemini import call_gemini_normal
+from .openai import call_gpt_normal, call_o1mini_normal
 
 _MAX_CHAT_MESSAGES = 10
 _AI_MODELS = {
-    "GOOGLE_NORMAL": call_gemini_normal
+    "GEMINI_NORMAL": call_gemini_normal,
+    "GPT_NORMAL": call_gpt_normal,
+    "O1MINI_NORMAL": call_o1mini_normal
 }
 
 
@@ -22,7 +25,7 @@ def _convert_json_to_chat_objects(json_data: list[dict]) -> list[HumanMessage | 
     return messages
 
 
-def _call_models(model_name: str, chat_history: list[dict], new_prompt: str, summary_history=None) -> BaseMessage | None:
+def _call_models(model_name: str, chat_history: list[dict], new_prompt: str, summary_history=None) -> str | None:
     try:
         if _AI_MODELS.get(model_name) is None:
             return None
@@ -34,7 +37,7 @@ def _call_models(model_name: str, chat_history: list[dict], new_prompt: str, sum
 
         formatted_history.append(HumanMessage(content=new_prompt))
         data = _AI_MODELS.get(model_name)(formatted_history)
-        return data
+        return data.content
     except Exception as e:
         print(e)
         return None
@@ -49,10 +52,16 @@ async def send_message(thread_id: int, prompt: str):
     session = json.loads(redis_store.get(thread_id))
     if session is None:
         return
+    
+    if len(session.get("chat")) > _MAX_CHAT_MESSAGES:
+        summary = _summarize_chat_history(session.get("chat"))
+        session["summary_chat"] = summary
+        session["chat"] = session.get("chat")[:_MAX_CHAT_MESSAGES:]
+        redis_store.set(thread_id, json.dumps(session))
 
     summary_of_chat = None
-    if len(session.get("chat")) > _MAX_CHAT_MESSAGES:
-        summary_of_chat = _summarize_chat_history(session.get("chat"))
+    if session.get("summary_chat") is not None or session.get("summary_chat") != "":
+        summary_of_chat = session.get("summary_chat")
 
     thread = discord.bot.get_channel(session["id"])
     await thread.trigger_typing()
@@ -68,8 +77,10 @@ async def send_message(thread_id: int, prompt: str):
 
     session["chat"].append({
         "role": "bot",
-        "msg": new_ai_message.content
+        "msg": new_ai_message
     })
 
     redis_store.set(thread_id, json.dumps(session))
-    await thread.send(new_ai_message.content)
+
+    for i in range(0, len(new_ai_message), 2000):
+        await thread.send(new_ai_message[i:i + 2000])
