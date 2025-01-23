@@ -1,5 +1,5 @@
 import json
-from langchain_core.messages import HumanMessage, AIMessage, BaseMessage
+from langchain_core.messages import HumanMessage, AIMessage
 
 from src import bot as discord
 from src.redis_store import redis_store
@@ -33,7 +33,7 @@ def _call_models(model_name: str, chat_history: list[dict], new_prompt: str, sum
         formatted_history = _convert_json_to_chat_objects(chat_history)
         if summary_history is not None:
             formatted_history.append(
-                AIMessage(content=f"Summary of pervious chat messages: {summary_history}"))
+                AIMessage(content=f"Summary of pervious chat messages and label it as \"SUMMARY OF PREVIOUS CHAT MESSAGES\": {summary_history}"))
 
         formatted_history.append(HumanMessage(content=new_prompt))
         data = _AI_MODELS.get(model_name)(formatted_history)
@@ -42,12 +42,12 @@ def _call_models(model_name: str, chat_history: list[dict], new_prompt: str, sum
         print(e)
         return None
 
-
+# TODO (Gabe) This is simple, should also add a way to pass in previous summaries as well
 def _summarize_chat_history(chat_history: list[dict]) -> str:
-    first_msgs = chat_history[0:len(chat_history) - _MAX_CHAT_MESSAGES]
-    return _call_models("GOOGLE_NORMAL", first_msgs, "Summarize the chat history").content
+    first_msgs = chat_history[:_MAX_CHAT_MESSAGES]
+    return _call_models("GEMINI_NORMAL", first_msgs, "Summarize the chat history")
 
-
+# TODO (Gabe) Add more error handling
 async def send_message(thread_id: int, prompt: str):
     session = json.loads(redis_store.get(thread_id))
     if session is None:
@@ -56,7 +56,7 @@ async def send_message(thread_id: int, prompt: str):
     if len(session.get("chat")) > _MAX_CHAT_MESSAGES:
         summary = _summarize_chat_history(session.get("chat"))
         session["summary_chat"] = summary
-        session["chat"] = session.get("chat")[:_MAX_CHAT_MESSAGES:]
+        session["chat"] = session.get("chat")[_MAX_CHAT_MESSAGES:]
         redis_store.set(thread_id, json.dumps(session))
 
     summary_of_chat = None
@@ -75,7 +75,13 @@ async def send_message(thread_id: int, prompt: str):
         await thread.send("**Error: Model not found or something went wrong**")
         return  # exit of out loop since key does not exist
 
-    session["chat"].append({
+    session["chat"].append(
+    {
+        "role": "user",
+        "msg": prompt
+    })
+    session["chat"].append(  
+    {
         "role": "bot",
         "msg": new_ai_message
     })
