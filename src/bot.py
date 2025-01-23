@@ -12,7 +12,7 @@ _intents.members = True  # Needed for member-related events
 
 bot = discord.Bot(intents=_intents)
 
-
+# TODO (Gabe) Setup a logger for bot
 @bot.event
 async def on_ready():
     print(f"We have logged in as {bot.user}")
