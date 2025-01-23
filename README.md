@@ -125,7 +125,7 @@ source venv/bin/activate (Only for Mac and Linux)
 pip install -r requirements.txt
 ```
 
-**To exit out of the environment**
+**To exit out of the environment use this command:**
 
 ```bash
 deactivate
