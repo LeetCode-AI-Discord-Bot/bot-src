@@ -12,6 +12,7 @@ chat_session = discord.SlashCommandGroup(
     "Create a new AI chat session", 
     guild_ids=[int(os.getenv("DISCORD_GUILD_ID"))])
 
+# TODO (Gabe) Make this more generic and also create the chat session as well
 async def create_chat_thread(ctx: discord.Interaction, prompt: str, model: str):
     if isinstance(ctx.channel, discord.Thread):
         await ctx.respond("You are already in a thread.")

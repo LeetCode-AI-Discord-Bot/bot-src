@@ -18,7 +18,8 @@ async def on_ready():
     print(f"We have logged in as {bot.user}")
 
 
-# NOTE: I don't know if this works or not, it supposed to trigger when thread is archived
+# TODO (Gabe) Remove this later as it doesn't work (still don't) and 
+#   use redis expiration for this. Maybe set up a cron job?
 @bot.event
 async def on_thread_remove(thread: discord.Thread):
     # Check if the archived status has changed
