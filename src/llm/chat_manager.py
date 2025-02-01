@@ -6,12 +6,14 @@ from src.redis_store import redis_store
 
 from .gemini import call_gemini_normal
 from .openai import call_gpt_normal, call_o1mini_normal
+from .test_prompt_model import call_testing_model
 
 _MAX_CHAT_MESSAGES = 10
 _AI_MODELS = {
     "GEMINI_NORMAL": call_gemini_normal,
     "GPT_NORMAL": call_gpt_normal,
-    "O1MINI_NORMAL": call_o1mini_normal
+    "O1MINI_NORMAL": call_o1mini_normal,
+    # "TESTING_MODEL": call_testing_model
 }
 
 
@@ -24,8 +26,14 @@ def _convert_json_to_chat_objects(json_data: list[dict]) -> list[HumanMessage | 
             messages.append(AIMessage(content=data["msg"]))
     return messages
 
-
-def _call_models(model_name: str, chat_history: list[dict], new_prompt: str, summary_history=None) -> str | None:
+#(Yahya) Modify this by adding in gpt selection
+def _call_models(model_name: str, 
+                 chat_history: list[dict], 
+                 new_prompt: str, 
+                 summary_history=None, 
+                 system_prompt=None, 
+                 temperature=None,
+                 gpt=None) -> str | None:
     try:
         if _AI_MODELS.get(model_name) is None:
             return None
@@ -36,7 +44,13 @@ def _call_models(model_name: str, chat_history: list[dict], new_prompt: str, sum
                 AIMessage(content=f"Summary of pervious chat messages and label it as \"SUMMARY OF PREVIOUS CHAT MESSAGES\": {summary_history}"))
 
         formatted_history.append(HumanMessage(content=new_prompt))
-        data = _AI_MODELS.get(model_name)(formatted_history)
+
+        data = None
+        if model_name == "TESTING_MODEL":
+            data = call_testing_model(formatted_history, system_prompt, temperature, gpt)
+        else:
+            data = _AI_MODELS.get(model_name)(formatted_history)
+
         return data.content
     except Exception as e:
         print(e)
@@ -48,6 +62,7 @@ def _summarize_chat_history(chat_history: list[dict]) -> str:
     return _call_models("GEMINI_NORMAL", first_msgs, "Summarize the chat history")
 
 # TODO (Gabe) Add more error handling
+# TODO (Yahya) Modify this by adding in gpt selection
 async def send_message(thread_id: int, prompt: str):
     session = json.loads(redis_store.get(thread_id))
     if session is None:
@@ -69,7 +84,10 @@ async def send_message(thread_id: int, prompt: str):
     new_ai_message = _call_models(session.get("model"),
                                   session.get("chat"),
                                   prompt,
-                                  summary_of_chat)
+                                  summary_of_chat,
+                                  session.get("system_prompt"),
+                                  session.get("temp"),
+                                  session.get("gpt"))
 
     if new_ai_message is None:
         await thread.send("**Error: Model not found or something went wrong**")

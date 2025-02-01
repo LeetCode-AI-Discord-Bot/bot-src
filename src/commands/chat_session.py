@@ -84,22 +84,23 @@ async def o1mini(ctx: discord.Interaction, prompt: str):
     redis_store.set(thread.id, json.dumps(session))
     await send_message(thread.id, prompt)
 
-@chat_session.command()
-async def test_custom0(ctx: discord.Interaction, prompt: str, systemprompt, temperature, gpt):
-    thread = await create_chat_thread(ctx, prompt, "gpt-4o-mini")
+@chat_session.command() #(Yahya) Testing a custom function to have an easier time prompting.
+async def test_prompt(ctx: discord.Interaction, prompt: str, system_prompt, temperature, gpt):
+    thread = await create_chat_thread(ctx, prompt, "testing model")
 
     session = {
         "id": thread.id,
         "summary_chat": "",
-        "model": "GPT_NORMAL", 
+        "model": "TESTING_MODEL", 
         "chat": [{
             "role": "user",
             "msg": prompt
         }],
-        "systemprompt": systemprompt,
+        "system_prompt": system_prompt,
         "temp": temperature,
         "gpt": gpt
     }
-
+    #chat_session
+    #
     redis_store.set(thread.id, json.dumps(session))
     await send_message(thread.id, prompt)
