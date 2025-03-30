@@ -1,0 +1,54 @@
+import os
+import discord
+from discord.ext import commands
+# import redis
+from dotenv import load_dotenv
+
+load_dotenv() 
+
+intents = discord.Intents.default()
+intents.message_content = True  # Allow reading message content
+intents.guilds = True
+intents.members = True  # Needed for member-related events
+
+class DiscordBot(commands.Bot):
+    def __init__(self):
+        super().__init__(intents=intents, help_command=None, command_prefix="/")
+        self.redis = None
+
+    async def on_ready(self) -> None:
+        print(os.getenv("SERVER_ID"))
+        print(f"Logged in as {self.user.name}#{self.user.discriminator}")
+
+    # async def redis_connect(self) -> None:
+    #     self.redis = redis.Redis.from_url(os.getenv("REDIS_URL"))
+
+    async def load_cogs(self) -> None:
+        for filename in os.listdir("./cogs"):
+            print(f"Loading cog {filename[:-3]}")
+            if filename.endswith(".py"):
+                try:
+                    await self.load_extension(f"cogs.{filename[:-3]}")
+                    print(f"Loaded cog {filename[:-3]}")
+                except Exception as e:
+                    print(f"Failed to load cog {filename[:-3]}: {e}")
+
+    async def setup_hook(self) -> None:
+        print("Setting up bot...")
+        # await self.redis_connect()
+        await self.load_cogs()
+        await self.tree.sync(guild=discord.Object(id=os.getenv("SERVER_ID")))
+
+    async def on_message(self, message: discord.Message) -> None:
+        """
+        The code in this event is executed every time someone sends a message, with or without the prefix
+
+        :param message: The message that was sent.
+        """
+        if message.author == self.user or message.author.bot:
+            return
+        await self.process_commands(message)
+
+
+bot = DiscordBot()
+bot.run(os.getenv("DISCORD_BOT_TOKEN"))
