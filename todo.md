@@ -1,3 +1,23 @@
+Saved Links
+https://pypi.org/project/discord-webhook/
+https://docs.python.org/3/library/urllib.parse.html
+https://github.com/matthewwithanm/python-markdownify
+https://pypi.org/project/requests/
+https://discordpy.readthedocs.io/en/stable/ext/commands/cogs.html
+https://redis.readthedocs.io/en/stable/index.html
+https://discordpy.readthedocs.io/en/stable/api.html?highlight=create_thread#discord.Message.channel
+https://langchain-ai.github.io/langgraph/concepts/memory/#summarizing-past-conversations
+https://github.com/openai/gpt-discord-bot/blob/main/src/utils.py
+https://github.com/kkrypt0nn/Python-Discord-Bot-Template/blob/main/bot.py
+https://www.interviewcoder.co/#pricing
+https://langchain-ai.github.io/langgraph/how-tos/persistence_redis/#define-imports-and-helper-functions
+https://github.com/alfaarghya/alfa-leetcode-api?tab=readme-ov-file
+https://docs.python.org/3/library/subprocess.html
+https://langchain-ai.github.io/langgraph/prebuilt/#available-libraries
+https://python.langchain.com/docs/how_to/custom_tools/
+https://python.langchain.com/docs/tutorials/agents/#define-tools
+
+
 https://www.reddit.com/r/MachineLearning/comments/1b5gyy3/p_need_help_finetuning_a_llm_to_act_as_an_ai/
 https://yzy-twts.com/
 https://medium.com/aiprompts/turn-your-chat-gpt-into-ye-with-one-prompt-9ddfc2e55bc8

@@ -1,7 +1,6 @@
 import os
 import discord
 from discord.ext import commands
-# import redis
 from dotenv import load_dotenv
 
 load_dotenv() 
@@ -20,9 +19,6 @@ class DiscordBot(commands.Bot):
         print(os.getenv("SERVER_ID"))
         print(f"Logged in as {self.user.name}#{self.user.discriminator}")
 
-    # async def redis_connect(self) -> None:
-    #     self.redis = redis.Redis.from_url(os.getenv("REDIS_URL"))
-
     async def load_cogs(self) -> None:
         for filename in os.listdir("./cogs"):
             print(f"Loading cog {filename[:-3]}")
@@ -35,7 +31,6 @@ class DiscordBot(commands.Bot):
 
     async def setup_hook(self) -> None:
         print("Setting up bot...")
-        # await self.redis_connect()
         await self.load_cogs()
         await self.tree.sync(guild=discord.Object(id=os.getenv("SERVER_ID")))
 
