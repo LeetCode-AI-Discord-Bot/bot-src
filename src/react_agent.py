@@ -49,17 +49,20 @@ def run_python_code(code: str) -> str:
 
 
 # TODO: Make bot only run one instance
-search = TavilySearchResults(max_results=2, api_key=os.getenv("TAVILY_API_KEY"))
-tools = [search, run_python_code]
+SEARCH_TOOL = TavilySearchResults(max_results=2, api_key=os.getenv("TAVILY_API_KEY"))
+BASE_MODEL = ChatOpenAI(model_name="gpt-4o", api_key=os.getenv("OPENAI_API_KEY"))
+CHECK_POINT_SAVER = RedisCheckpointSaver(redis.Redis.from_url(os.getenv("REDIS_URL")))
+AGENT_TOOLS = [SEARCH_TOOL, run_python_code]
 
 class ReActAgent:
-    def __init__(self, leetcode_url):
-        self.CheckpointSaver = RedisCheckpointSaver(redis.Redis.from_url(os.getenv("REDIS_URL")))
-        self.model = ChatOpenAI(model_name="gpt-4o", api_key=os.getenv("OPENAI_API_KEY"))
+    def __init__(self, leetcode_url: str, thread_id: str):
+        self.CheckpointSaver = CHECK_POINT_SAVER
+        self.model = BASE_MODEL
         self.leetcode_problem = LeetCodeProblem(leetcode_url)
-        self.agent_executor = create_react_agent(self.model, tools, checkpointer=self.CheckpointSaver)
+        self.thread_id = thread_id
+        self.agent_executor = create_react_agent(self.model, AGENT_TOOLS, checkpointer=self.CheckpointSaver)
 
-    def process_message(self, user_message: str, thread_id: str) -> str:
+    def process_message(self, user_message: str) -> str:
         try:
             system_message = SYSTEM_PROMPT + "\n\n LeetCode Title: " + self.leetcode_problem.title + "\n\n LeetCode Problem:" + self.leetcode_problem.question
             system_message += "\n\n Hints:\n" + "\n".join(self.leetcode_problem.hints) if self.leetcode_problem.hints != [] else "\nNone"
@@ -70,7 +73,7 @@ class ReActAgent:
                         HumanMessage(content=user_message),
                     ] 
                 },
-                config={"configurable": {"thread_id": thread_id}},
+                config={"configurable": {"thread_id": self.thread_id}},
                 stream_mode="values"
             )
 
@@ -88,5 +91,5 @@ class ReActAgent:
             raise Exception("Failed to call model") from exc
 
 if __name__ == "__main__":
-    agent = ReActAgent("https://leetcode.com/problems/maximum-subarray/")
-    agent.process_message("write a hello welcome message for me regarding the problem", "1")
+    agent = ReActAgent("https://leetcode.com/problems/maximum-subarray/", "1")
+    agent.process_message("write a hello welcome message for me regarding the problem")

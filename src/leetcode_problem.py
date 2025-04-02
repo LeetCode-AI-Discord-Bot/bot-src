@@ -2,6 +2,14 @@ import requests
 import re
 from markdownify import markdownify as html_to_md
 
+
+def extract_problem_name(url: str) -> str:
+    match = re.search(r'leetcode\.com/problems/([^/]+)/', url)
+    if not match:
+        return None
+    
+    return match.group(1)
+
 # TODO: Add redis caching here to save on url calls, if i feel like it
 class LeetCodeProblem():
     def __init__(self, leetcode_url: str):
@@ -11,11 +19,10 @@ class LeetCodeProblem():
         self.__getData()
 
     def __extract_problem_name(self, url: str) -> str:
-        match = re.search(r'leetcode\.com/problems/([^/]+)/', url)
-        if not match:
+        problem_name = extract_problem_name(url)
+        if not problem_name:
             raise Exception("Invalid LeetCode URL")
-
-        return match.group(1)
+        return problem_name
     
     def __getData(self) -> None:
         try:
