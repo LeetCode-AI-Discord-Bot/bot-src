@@ -33,7 +33,7 @@ class RedisThreadStorage:
 
     def get(self, thread_id: str) -> ThreadData | None:
         data = self.redis.get(self.__create_key(thread_id))
-        json_data = json.loads(str(data, "utf-8"))
         if not data:
             return None
+        json_data = json.loads(str(data, "utf-8"))
         return ThreadData(json_data["users"], json_data["leetcode_url"])
