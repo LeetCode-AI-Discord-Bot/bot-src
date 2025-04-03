@@ -6,6 +6,7 @@ from langgraph.prebuilt import create_react_agent
 import redis
 import requests
 
+from src.logger import logger
 from src.leetcode_problem import LeetCodeProblem
 from src.redis_checkpoint_saver import RedisCheckpointSaver
 
@@ -59,7 +60,7 @@ class ReActCodeAgent:
 
             last_message = None
             for step in stream:
-                step["messages"][-1].pretty_print()
+                logger.info(f"[REACT-CODE-AGENT] LLM MESSAGES={step["messages"][-1].content}")
                 last_message = step["messages"][-1]
 
             if not last_message:
@@ -68,7 +69,7 @@ class ReActCodeAgent:
             return last_message.content
 
         except Exception as exc:
-            raise Exception("Failed to call model") from exc
+            raise Exception(f"Failed to call model: {str(exc)}") from exc
 
 if __name__ == "__main__":
     agent = ReActCodeAgent("https://leetcode.com/problems/maximum-subarray/", "1", system_prompt="Test")

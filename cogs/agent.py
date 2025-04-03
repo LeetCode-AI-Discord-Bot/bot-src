@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 load_dotenv() 
 
 from src.react_code_agent import ReActCodeAgent
+from src.logger import logger
 from src.leetcode_problem import extract_problem_name
 from src.redis_thread_storage import RedisThreadStorage
 
@@ -73,6 +74,7 @@ class Agent(commands.Cog, name="Agent"):
         self.bot = bot
 
     async def __create_session(self, ctx, leetcode_url: str, model_type, system_prompt):
+        logger.info(f"[AGENT] Create new thread | leetcode url = {leetcode_url} | user id = {ctx.author.id}")
         message_sent = await ctx.send("Thread is being cooked for: " + leetcode_url)
         thread = None
         try:
@@ -84,7 +86,7 @@ class Agent(commands.Cog, name="Agent"):
             await thread.send(welcome_message)
 
         except Exception as e:
-            print(e)
+            logger.error(f"[AGENT] Create new thread failed | error = {str(e)}")
             if thread is not None:
                 thread_storage.delete(str(thread.id))
                 await thread.delete()
@@ -108,13 +110,14 @@ class Agent(commands.Cog, name="Agent"):
     async def on_message(self, message: discord.Message):
         thread = thread_storage.get(str(message.channel.id))
         if (thread is not None and message.author.id != self.bot.user.id):
+            logger.info(f"[AGENT] Create response message | message = {message.content} | thread id = {message.channel.id} | user id = {message.author.id}")
             try:
                 system_prompt = SYSTEM_PROMPT_INTERVIEWER if thread.model == "interviewer" else SYSTEM_PROMPT_TUTOR
                 agent = ReActCodeAgent(thread.leetcode_url, str(message.channel.id), system_prompt)
                 welcome_message = agent.process_message(message.content)
                 await message.channel.send(welcome_message)
             except Exception as e:
-                print(e)
+                logger.error(f"[AGENT] Fail Create response message | message = {message.content} | thread id = {message.channel.id} | error = {str(e)}")
                 await message.channel.send("BRUH I'M DEAD...")
 
 async def setup(bot) -> None:

@@ -1,6 +1,7 @@
 import os
 import discord
 from discord.ext import commands
+from src.logger import logger
 from dotenv import load_dotenv
 
 load_dotenv() 
@@ -16,21 +17,22 @@ class DiscordBot(commands.Bot):
         self.redis = None
 
     async def on_ready(self) -> None:
-        print(os.getenv("SERVER_ID"))
-        print(f"Logged in as {self.user.name}#{self.user.discriminator}")
+        logger.info(f"Main Server = {os.getenv("SERVER_ID")}")
+        logger.info(f"Logged in as {self.user.name}#{self.user.discriminator}")
+        logger.info(f"Running...")
 
     async def load_cogs(self) -> None:
         for filename in os.listdir("./cogs"):
-            print(f"Loading cog {filename[:-3]}")
+            logger.info(f"Loading cog {filename[:-3]}")
             if filename.endswith(".py"):
                 try:
                     await self.load_extension(f"cogs.{filename[:-3]}")
-                    print(f"Loaded cog {filename[:-3]}")
+                    logger.info(f"Loaded cog {filename[:-3]}")
                 except Exception as e:
-                    print(f"Failed to load cog {filename[:-3]}: {e}")
+                    logger.error(f"Failed to load cog {filename[:-3]}: {str(e)}")
 
     async def setup_hook(self) -> None:
-        print("Setting up bot...")
+        logger.info("Setting up bot...")
         await self.load_cogs()
         await self.tree.sync(guild=discord.Object(id=os.getenv("SERVER_ID")))
 

@@ -2,7 +2,6 @@ import requests
 import re
 from markdownify import markdownify as html_to_md
 
-
 def extract_problem_name(url: str) -> str:
     match = re.search(r'leetcode\.com/problems/([^/]+)/', url)
     if not match:
@@ -21,7 +20,7 @@ class LeetCodeProblem():
     def __extract_problem_name(self, url: str) -> str:
         problem_name = extract_problem_name(url)
         if not problem_name:
-            raise Exception("Invalid LeetCode URL")
+            raise Exception(f"Invalid LeetCode URL: {self.leetcode_url}")
         return problem_name
     
     def __getData(self) -> None:
@@ -31,7 +30,7 @@ class LeetCodeProblem():
             self.hints = [html_to_md(x) for x in self.raw_data["hints"]]
             self.question = html_to_md(self.raw_data["question"])
         except Exception as exc:
-            raise Exception("Failed to get data from LeetCode API") from exc
+            raise Exception(f"Failed to get data from LeetCode API: {str(exc)}") from exc
 
 
 if __name__ == "__main__":
