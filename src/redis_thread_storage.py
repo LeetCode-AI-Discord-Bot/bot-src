@@ -6,9 +6,10 @@ from dotenv import load_dotenv
 load_dotenv() 
 
 class ThreadData:
-    def __init__(self, users, leetcode_url):
+    def __init__(self, users: str, leetcode_url: str, model: str):
         self.users = users
         self.leetcode_url = leetcode_url
+        self.model = model
 
 class RedisThreadStorage:
     def __init__(self):
@@ -23,10 +24,11 @@ class RedisThreadStorage:
             return True
         return False
 
-    def add(self, thread_id: str, user_id: str, leetcode_url: str) -> bool:
+    def add(self, thread_id: str, user_id: str, leetcode_url: str, model: str) -> bool:
         data = {
             "users": [user_id],
-            "leetcode_url": leetcode_url
+            "leetcode_url": leetcode_url,
+            "model": model
         }
 
         return self.redis.set(self.__create_key(thread_id), json.dumps(data))
@@ -36,4 +38,4 @@ class RedisThreadStorage:
         if not data:
             return None
         json_data = json.loads(str(data, "utf-8"))
-        return ThreadData(json_data["users"], json_data["leetcode_url"])
+        return ThreadData(json_data["users"], json_data["leetcode_url"], json_data["model"])
