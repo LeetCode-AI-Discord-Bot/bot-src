@@ -17,7 +17,7 @@ class DiscordBot(commands.Bot):
         self.redis = None
 
     async def on_ready(self) -> None:
-        logger.info(f"Main Server = {os.getenv("SERVER_ID")}")
+        logger.info(f"Main Server = {os.getenv("DISCORD_GUILD_ID")}")
         logger.info(f"Logged in as {self.user.name}#{self.user.discriminator}")
         logger.info(f"Running...")
 
@@ -34,7 +34,7 @@ class DiscordBot(commands.Bot):
     async def setup_hook(self) -> None:
         logger.info("Setting up bot...")
         await self.load_cogs()
-        await self.tree.sync(guild=discord.Object(id=os.getenv("SERVER_ID")))
+        await self.tree.sync(guild=discord.Object(id=os.getenv("DISCORD_GUILD_ID")))
 
     async def on_message(self, message: discord.Message) -> None:
         """
