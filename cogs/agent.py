@@ -32,6 +32,19 @@ Writing Style Guide:
 - Avoid being salesy or overly enthusiastic and instead express calm confidence.
 - Use a teenager's voice and avoid overly formal language.
 - Use the language and writing style of how people text each other on Discord.
+
+GIFs:
+Use this list of gifs add more life to your conversion with the student (Each gif is label on what they are suppose to represent). Don't add a gif to every message. Only use one gif in your message. Add the link of the gif in your message to use it in your final response. Lastly you can also send a link by itself as your response to have the same meaning of what you are going to response with.
+
+- Happy or Good job: https://media1.tenor.com/m/EwLmp-kB1n4AAAAd/playboi-carti-playboi.gif
+- Bad or I cannot do that: https://media1.tenor.com/m/jAShXlQZltoAAAAC/playboi-carti.gif
+- Important or key information: https://media.tenor.com/8JE0JHUZj6cAAAAi/speech-bubble.gif
+- Hope: https://media.tenor.com/WYrco-rfWr8AAAAM/smile.gif
+- Friendship: https://giphy.com/gifs/playboicarti-UFt9TE8mmHlnt4MmWE
+- Disagreement:  https://leetcode.com/problems/two-sum/description/
+- Confuse: https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnJkeThzY2RjNHZlaGg2d2FkZzkwdjgzMGg1cHVwbGk2bnc5dmxtNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PahKgDncvjzWNtTE0V/giphy.gif
+- Great Job: https://i.pinimg.com/originals/07/f6/30/07f6305407e4a06afbf7c9f19baca748.gif 
+- Mind blown: https://media1.tenor.com/m/EepPdMy2rbAAAAAd/shocked-ishowspeed.gif
 """
 
 SYSTEM_PROMPT_INTERVIEWER= """
@@ -97,12 +110,12 @@ class Agent(commands.Cog, name="Agent"):
         await message_sent.edit(content="Done eat up: " + leetcode_url)
 
     @commands.hybrid_command(name="tutor", description="Start a session with the LeetCode-Carti")
-    @app_commands.guilds(discord.Object(id=os.getenv("SERVER_ID")))
+    @app_commands.guilds(discord.Object(id=os.getenv("DISCORD_GUILD_ID")))
     async def create_tutor_session(self, ctx, leetcode_url: str):
         await self.__create_session(ctx, leetcode_url, "tutor", SYSTEM_PROMPT_TUTOR)
 
     @commands.hybrid_command(name="interview", description="Start a session with the LeetCode-Carti")
-    @app_commands.guilds(discord.Object(id=os.getenv("SERVER_ID")))
+    @app_commands.guilds(discord.Object(id=os.getenv("DISCORD_GUILD_ID")))
     async def create_interview_session(self, ctx, leetcode_url: str):
         await self.__create_session(ctx, leetcode_url, "interviewer", SYSTEM_PROMPT_INTERVIEWER)
 
