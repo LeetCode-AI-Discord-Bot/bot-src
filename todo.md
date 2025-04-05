@@ -1,3 +1,30 @@
+Just a junk file for things todo and resources, nothing really important
+
+FUTURE TODO
+- Allow image uploading via user
+- Clean up dead threads when the are achieved (do this via webhooks and redis)
+- Connect to user leetcode account to get their submissions and problem history
+- Do ranking system for cs club
+- Add deep research, take weblink and convert into markdown for llm to read
+
+
+LAST TODO
+- [x] Create logger: 
+  - https://stackoverflow.com/questions/6386698/how-to-write-to-a-file-using-the-logging-python-module
+  - https://docs.python.org/3/howto/logging.html
+- [x] Create Python code runner server
+- [x] Bring over and run own docker instance of leetcode api as a service
+- [x] Create docker deployment script
+- [x] Add more memes to funny commands
+- [x] Play with prompt (create tutor and interview role play)
+- [ ] Send to kobe and other people on server
+
+Links
+- https://langchain-ai.github.io/langgraph/reference/graphs/?h=compiledgraph#langgraph.graph.graph.CompiledGraph.stream
+- https://stackoverflow.com/questions/43274476/is-there-a-way-to-check-if-a-subprocess-is-still-running
+- https://langchain-ai.github.io/langgraph/tutorials/introduction/#part-1-build-a-basic-chatbot
+- https://python.langchain.com/docs/tutorials/agents/#define-tools
+
 Saved Links
 https://pypi.org/project/discord-webhook/
 https://docs.python.org/3/library/urllib.parse.html
