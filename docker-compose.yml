@@ -1,4 +1,6 @@
 
+# This is for production
+
 services:
   redis:
     image: redis:latest

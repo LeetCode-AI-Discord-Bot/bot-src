@@ -1,0 +1,16 @@
+
+# This is for development
+
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  leetcode-api:
+    image: alfaarghya/alfa-leetcode-api:2.0.1
+
+volumes:
+  redis_data:
