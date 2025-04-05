@@ -1,17 +1,23 @@
-**Bot src:** This is where the main bot code is located
+<p align="center">
+  <img src="./assets/carti-cash-carti.gif" width="300px">
+</p>
+
+# PLU LeetCode Discord Bot 
+
+*(Also know as leencode-carti)*
 
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
-- [Overview of The Project](#overview-of-the-project)
-- [Env Variables](#env-variables)
-- [Setup For Local Development](#setup-for-local-development)
-  - [Step 1 (Env Variables)](#step-1-env-variables)
-  - [Step 2 (Docker)](#step-2-docker)
-  - [Step 3 (Setup Python Environment)](#step-3-setup-python-environment)
-  - [Step 4 (Run Bot)](#step-4-run-bot)
-- [Production](#production)
-- [Resources](#resources)
+- [PLU LeetCode Discord Bot](#plu-leetcode-discord-bot)
+  - [Table of Contents](#table-of-contents)
+  - [Overview of The Project](#overview-of-the-project)
+  - [Env Variables](#env-variables)
+  - [Setup For Local Development](#setup-for-local-development)
+    - [Step 1 (Env Variables)](#step-1-env-variables)
+    - [Step 2 (Docker)](#step-2-docker)
+    - [Step 3 (Setup Python Environment)](#step-3-setup-python-environment)
+    - [Step 4 (Run Bot)](#step-4-run-bot)
+  - [Production](#production)
 
 ##  Overview of The Project
 
@@ -34,7 +40,10 @@ These are the environment variables required to be defined before running the bo
 - `DISCORD_BOT_TOKEN`: The bot token from the Discord Developer Portal
 - `REDIS_URL`: The connection string to the Redis database
 - `DISCORD_GUILD_ID`: The server ID (not the channel ID) of the Discord server
-- `GOOGLE_API_KEY` and `OPENAI_API_KEY`: The API keys for Google Gemini and OpenAI, respectively
+- `OPENAI_API_KEY`: The API OpenAI
+- `LEETCODE_API_KEY`: The API key for LeetCode API
+- `TAVILY_API_KEY`: The API key for Tavily API
+- `CODE_SERVER_URL`: The URL of the code server (use for running python code, Agent tooling)
 
 **Note:** Instead of specifying the channel ID, the bot will use roles to determine which channels 
 it can read from/write to. This makes it more scalable and easier to manage.
@@ -45,8 +54,10 @@ it can read from/write to. This makes it more scalable and easier to manage.
 DISCORD_BOT_TOKEN={bot token}
 REDIS_URL={connection string to redis}
 DISCORD_GUILD_ID={server id}
-GOOGLE_API_KEY={gemini api key}
 OPENAI_API_KEY={openai api key}
+TAVILY_API_KEY={tavily api key}
+LEETCODE_API_KEY={leetcode api key}
+CODE_SERVER_URL={code server url}
 ```
 
 If you need help setting up roles on discord please follow this guide:
@@ -59,14 +70,13 @@ If that is still confusing, DM Gabe.
 
 ##  Setup For Local Development
 
-These are the steps to setup the bot for local development.
+These are the steps to setup the bot for local development (running on your local machine).
 
 ### Step 1 (Env Variables)
 
 First make sure you have all the API keys define in the env variables.
 
 - [OpenAI](https://openai.com/)
-- [Google AI Studio](https://aistudio.google.com/)
 - [Discord Developer Dashboard](https://discord.com/developers/applications)
   - Other resources for understanding how to setup a discord bot:
     - https://www.youtube.com/watch?v=H98fj3gnYbw
@@ -89,6 +99,7 @@ For the redis connection string, please define it as follows:
 
 ```txt
 REDIS_URL=redis://localhost:6379
+CODE_SERVER_URL=http://localhost:8000
 ```
 
 This is only for local development purposes. This will not work in production.
@@ -116,7 +127,7 @@ Run the following commands to create a local python environment. Do this at the 
 the project.
 
 ```bash
-python -m venv venv
+python -m venv venv (Or use the one in VS Code)
 
 source venv/bin/activate (Only for Mac and Linux)
 
@@ -131,13 +142,15 @@ pip install -r requirements.txt
 deactivate
 ```
 
+>[NOTE]: If you are modifying the `remote-code-server` folder, you need to run these commands inside that folder
+
 ### Step 4 (Run Bot)
 
 Before you can run the bot you need to run the database first (aka redis). To do that run the 
 following command at the root of the project.
 
 ```bash
-docker compose up
+docker compose -f docker-compose.dev.yml up
 ```
 
 This will download the latest version of redis and run it on the port 6379. Make sure the terminal 
@@ -146,8 +159,10 @@ doesn't give you any errors and says that redis is running.
 Now you can run the bot.
 
 ```bash
-python main.py
+python bot.py
 ```
+
+>[NOTE]: If you are modifying the `remote-code-server` folder, you need to run these commands inside that folder. Also don't forget to run that as well, since `docker-compose.dev.yml` does not run that service.
 
 >[NOTE] Make sure that you are still in the python environment. If you are not, go back to step 3 
 >and activate it and run this command again
@@ -157,38 +172,12 @@ python main.py
 
 ## Production
 
-This will be done via a docker image and added in at a later date. Stay tuned.
+Run this single command to run the bot in production.
 
+```bash
+docker compose up
+```
 
-## Resources
+Or add it to your own build system.
 
-These are the core technologies used in this project. All of these are resources that can help new people 
-understand the core of this project. If you have any good resources, please open a PR and add it to this list.
-
-**PyCord**
-
-This is used to create the actually bot. Basically it allow us to use Discord's API for creating and managing the bot.
-
-- https://pycord.dev/
-- https://guide.pycord.dev/
-- https://docs.pycord.dev/en/stable/
-- https://www.youtube.com/watch?v=9cCWiIYbo0s&list=PLku_udmvUj-yN5FAqjR-6RCb-W51kmeYr
-
-**LangChain**
-
-This is used to manage the different LLMs within our project. So we can use Google Gemini and OpenAI in a standardize way.
-
-- https://python.langchain.com/docs/introduction/
-- https://python.langchain.com/api_reference/
-- https://python.langchain.com/docs/integrations/chat/
-- https://www.youtube.com/watch?v=1bUy-1hGZpI
-
-**Redis**
-
-This is used to store the chat sessions. So we are not storing it directly on the server.
-
-- https://redis.io/
-- https://github.com/redis/redis-py
-- https://redis.io/docs/latest/commands/
-- https://www.youtube.com/watch?v=G1rOthIU-uo
-- https://www.youtube.com/watch?v=jgpVdJB2sKQ
+>[NOTE]: We are using coolify to manage our build to production
