@@ -20,6 +20,8 @@ from langgraph.checkpoint.base import (
 from langgraph.checkpoint.serde.base import SerializerProtocol
 from redis import Redis
 
+# Modify from: https://langchain-ai.github.io/langgraph/how-tos/persistence_redis/#define-imports-and-helper-functions
+
 class RedisCheckpointSaver(BaseCheckpointSaver):
     """Redis-based checkpoint saver implementation."""
 
