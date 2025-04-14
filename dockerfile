@@ -1,7 +1,7 @@
 FROM python:3
 
-WORKDIR /usr/src/app
-VOLUME /logs/
+WORKDIR /app
+VOLUME /app/logs
 
 COPY requirements.txt ./
 RUN pip install --upgrade pip
