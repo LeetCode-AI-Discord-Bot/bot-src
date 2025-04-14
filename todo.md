@@ -17,7 +17,7 @@ LAST TODO
 - [x] Create docker deployment script
 - [x] Add more memes to funny commands
 - [x] Play with prompt (create tutor and interview role play)
-- [ ] Send to kobe and other people on server
+- [x] Send to kobe and other people on server
 
 Links
 - https://langchain-ai.github.io/langgraph/reference/graphs/?h=compiledgraph#langgraph.graph.graph.CompiledGraph.stream
