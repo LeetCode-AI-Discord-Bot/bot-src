@@ -1,3 +1,11 @@
+# logs
+/logs
+
+# TEMP
+*-temp.py
+*-temp_code.py
+remote-code-server/temp_code
+
 # mac os
 .DS_Store
 

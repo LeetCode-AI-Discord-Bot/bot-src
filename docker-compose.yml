@@ -1,4 +1,5 @@
-version: "3.7"
+
+# This is for production
 
 services:
   redis:
@@ -8,5 +9,29 @@ services:
     volumes:
       - redis_data:/data
 
+  bot:
+    build: .
+    image: discord-bot
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - CODE_SERVER_URL=http://remote-code-server:8080
+      - LEETCODE_API_URL=http://leetcode-api:3000
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
+      - DISCORD_GUILD_ID=${DISCORD_GUILD_ID}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - bot_logs:/app/logs
+
+  remote-code-server:
+    build: ./remote-code-server
+    image: remote-code-server
+    environment:
+      - PORT=8080
+
+  leetcode-api:
+    image: alfaarghya/alfa-leetcode-api:2.0.1
+
 volumes:
+  bot_logs:
   redis_data:
