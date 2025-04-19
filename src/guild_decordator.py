@@ -10,4 +10,4 @@ def guild_decorator():
     if os.getenv("IS_PRODUCTION") == "True":
         return lambda x: x  # Don't restrict to a guild
     else:
-        return app_commands.guilds(discord.Object(id=os.getenv("DISCORD_GUILD_ID"),))
+        return app_commands.guilds(discord.Object(id=os.getenv("DISCORD_GUILD_ID")))
