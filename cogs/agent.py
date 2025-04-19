@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv() 
 
+from src.guild_decordator import guild_decorator
 from src.react_code_agent import ReActCodeAgent
 from src.logger import logger
 from src.leetcode_problem import extract_problem_name
@@ -110,12 +111,12 @@ class Agent(commands.Cog, name="Agent"):
         await message_sent.edit(content="Done eat up: " + leetcode_url)
 
     @commands.hybrid_command(name="tutor", description="Start a session with the LeetCode-Carti")
-    @app_commands.guilds(discord.Object(id=os.getenv("DISCORD_GUILD_ID")))
+    @guild_decorator()
     async def create_tutor_session(self, ctx, leetcode_url: str):
         await self.__create_session(ctx, leetcode_url, "tutor", SYSTEM_PROMPT_TUTOR)
 
     @commands.hybrid_command(name="interview", description="Start a session with the LeetCode-Carti")
-    @app_commands.guilds(discord.Object(id=os.getenv("DISCORD_GUILD_ID")))
+    @guild_decorator()
     async def create_interview_session(self, ctx, leetcode_url: str):
         await self.__create_session(ctx, leetcode_url, "interviewer", SYSTEM_PROMPT_INTERVIEWER)
 
