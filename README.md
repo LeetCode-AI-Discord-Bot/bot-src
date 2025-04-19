@@ -59,6 +59,7 @@ OPENAI_API_KEY={openai api key}
 TAVILY_API_KEY={tavily api key}
 LEETCODE_API_KEY={leetcode api key}
 CODE_SERVER_URL={code server url}
+IS_PRODUCTION={True or False}
 ```
 
 If you need help setting up roles on discord please follow this guide:
