@@ -44,6 +44,7 @@ These are the environment variables required to be defined before running the bo
 - `LEETCODE_API_KEY`: The API key for LeetCode API
 - `TAVILY_API_KEY`: The API key for Tavily API
 - `CODE_SERVER_URL`: The URL of the code server (use for running python code, Agent tooling)
+- `IS_PRODUCTION`: Whether the bot is running in production (True or False)
 
 **Note:** Instead of specifying the channel ID, the bot will use roles to determine which channels 
 it can read from/write to. This makes it more scalable and easier to manage.
