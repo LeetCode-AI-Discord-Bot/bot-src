@@ -1,3 +1,7 @@
+Create CDN gif tool for llm
+- https://www.reddit.com/r/CartiCulture/comments/1h5zy6g/which_song_had_the_best_music_video/
+- Need to make this it own tool
+
 Just a junk file for things todo and resources, nothing really important
 
 FUTURE TODO
