@@ -30,7 +30,7 @@ def create_python_tool(thread_id: str):
     return run_python_code
 
 SEARCH_TOOL = TavilySearch(max_results=2, topic="general")
-BASE_MODEL = ChatOpenAI(model_name="gpt-4o", api_key=os.getenv("OPENAI_API_KEY"))
+BASE_MODEL = ChatOpenAI(model_name="gpt-4.1", api_key=os.getenv("OPENAI_API_KEY"))
 CHECK_POINT_SAVER = RedisCheckpointSaver(redis.Redis.from_url(os.getenv("REDIS_URL")))
 
 class ReActCodeAgent:
