@@ -1,6 +1,6 @@
 import subprocess
 from langchain_openai import ChatOpenAI
-from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_tavily import TavilySearch
 from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.prebuilt import create_react_agent
 import redis
@@ -29,7 +29,7 @@ def create_python_tool(thread_id: str):
         
     return run_python_code
 
-SEARCH_TOOL = TavilySearchResults(max_results=2, api_key=os.getenv("TAVILY_API_KEY"))
+SEARCH_TOOL = TavilySearch(max_results=2, topic="general")
 BASE_MODEL = ChatOpenAI(model_name="gpt-4o", api_key=os.getenv("OPENAI_API_KEY"))
 CHECK_POINT_SAVER = RedisCheckpointSaver(redis.Redis.from_url(os.getenv("REDIS_URL")))
 
@@ -72,5 +72,6 @@ class ReActCodeAgent:
             raise Exception(f"Failed to call model: {str(exc)}") from exc
 
 if __name__ == "__main__":
+    # NOTE (Gabe): This sucks, but remove src. from import to run local testing of code
     agent = ReActCodeAgent("https://leetcode.com/problems/maximum-subarray/", "1", system_prompt="Test")
     agent.process_message("write a hello welcome message for me regarding the problem")
