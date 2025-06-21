@@ -11,6 +11,8 @@ services:
 
   leetcode-api:
     image: alfaarghya/alfa-leetcode-api:2.0.1
+    ports:
+      - "3000:3000"
 
 volumes:
   redis_data:
